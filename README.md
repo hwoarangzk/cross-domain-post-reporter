@@ -6,7 +6,7 @@ A component that can send post request
 A pure js function which can send post request.
 
 Import the cross-domain-post-reporter in your page, and then:
-
+<pre>
 postReport({
     action: url,
     data: {
@@ -16,6 +16,7 @@ postReport({
       ...
     }
 });
+</pre>
 
 Compatible with major browsers. 
 
