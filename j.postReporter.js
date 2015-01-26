@@ -10,8 +10,17 @@
 
 	var cb = function() {
 		setTimeout(function() {
-			document.body.removeChild(form);
-			document.body.removeChild(iframe);
+			try {
+				if (cForm) {
+					document.body.removeChild(cForm);
+				}
+
+				if (cIframe) {
+					document.body.removeChild(cIframe);
+				}
+			} catch (e) {
+				//form and iframe are removed already here
+			}
 		 }, 1000);
 	};
 
