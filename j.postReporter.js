@@ -2,21 +2,25 @@
 
 	var data,
 		form,
-		_formId = '__post_form',
-		_iframeName = '__post_iframe',
+		__formId = '__post_form',
+		__iframeName = '__post_iframe',
 		isIE = !!(window.ActiveXObject || window.msIsStaticHTML),
-		iframe;
+		iframe,
+		formsList = [],
+		iframeList = [],
+		global_count = 0,
+		MAX_COUNT = 999;
 
-
-	var cb = function() {
+	var cb = function(f, ifr) {
 		setTimeout(function() {
 			try {
-				if (cForm) {
-					document.body.removeChild(cForm);
+
+				if (f) {
+					document.body.removeChild(f);
 				}
 
-				if (cIframe) {
-					document.body.removeChild(cIframe);
+				if (ifr) {
+					document.body.removeChild(ifr);
 				}
 			} catch (e) {
 				//form and iframe are removed already here
@@ -27,7 +31,9 @@
 	var preSend = function() {
 
 		var inputEle,
-			docFragment = document.createDocumentFragment();
+			docFragment = document.createDocumentFragment(),
+			form = formsList.shift(),
+			ifr = iframeList.shift();
 		try {//ie
 			for (var i in data) {
 				inputEle = document.createElement('<input name="' + i + '"/>');
@@ -46,7 +52,7 @@
 		}
 		form.appendChild(docFragment);
         form.submit();
-    	cb();
+    	cb(form, ifr);
        
 	};
 
@@ -56,17 +62,13 @@
 			return;
 		}
 
-		var cForm = document.getElementById(_formId),
-			cIframe = document.getElementById(_iframeName);
-			
-		if (cForm) {
-			document.body.removeChild(cForm);
+		var _formId = __formId + global_count,
+			_iframeName = __iframeName + global_count;
+		global_count++;
+		if (global_count > MAX_COUNT) {
+			global_count = 0;
 		}
-
-		if (cIframe) {
-			document.body.removeChild(cIframe);
-		}
-
+		
 		var action = options.action;
 		data = options.data || {};
 
@@ -86,6 +88,9 @@
 
 		iframe.style.cssText = 'width:1px;height:0;display:none;';
 
+		formsList.push(form);
+		iframeList.push(iframe);
+
 		document.body.appendChild(iframe);
 		document.body.appendChild(form);
 
@@ -93,5 +98,4 @@
 			preSend();
 		}, 10);
 	};
-	
 })();
